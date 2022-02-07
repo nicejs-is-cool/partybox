@@ -5,7 +5,11 @@ export declare class Command {
     cmd: string;
     /** The description of the command (visible if you are using the default HelpCommand class) */
     description: string;
-    /** The usage of the command used for getting the arguments of the command */
+    /** The usage of the command used for getting the arguments of the command
+     * The type of the argument can be either `string`, `int` or `float`
+     * <> means its required
+     * [] means its optional
+     */
     usage: string;
     /** Aliases for this command */
     aliases: string[];
