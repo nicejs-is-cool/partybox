@@ -47,4 +47,4 @@ client.addCommand(new HelpCommand())
 client.connect();
 ```
 ### Documentation
-not ready yet
+You can ready the documentation [here](https://nicejs-is-cool.github.io/partybox/).
