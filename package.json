@@ -1,7 +1,7 @@
 {
   "name": "partybox",
   "version": "0.0.1",
-  "description": "A small bot framework for [trollbox.party](https://trollbox.party)\r ### Install\r ```\r npm install partybox\r ```\r ### Example\r JavaScript example of this framework (TypeScript is also supported but not tested)\r ```js\r const { Client, Command, User, HelpCommand } = require(\"partybox\");",
+  "description": "A small bot framework for trollbox.party",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
