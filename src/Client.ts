@@ -7,12 +7,14 @@ import { Message } from './Message';
 import parseUsageArgs from './parseUsageArgs'
 import argsParser from './argsparser';
 import he from 'he';
+import uMessage from './uMessage';
 
 export class Client extends EventEmitter {
     public user: User;
     public users: User[];
     public commands: Command[];
     public client: any;
+    private src: string = "";
     constructor(public prefix: string) {
         super();
         this.user = new User('A Partybox bot.', '#00ff00', 'local');
@@ -53,17 +55,29 @@ export class Client extends EventEmitter {
      * @param message The message to reply to the user
      */
     reply(user: string, usermsg: string, message: string) {
-        this.send(`*${user}: ${usermsg}*\n${message}`);
+        this.send(this.uMessage(`*${user}: ${usermsg}*\n${message}`));
     }
     /** Connecs to trollbox.party
      * @returns {void} void
      */
-    connect() {
-        this.client = io("https://trollbox.party", {
-            path: "/api/v0/si",
-            forceNew: true
-        });
-        this.client.on("_connected", () => {
+    connect(src: string = "trollbox.party") {
+        this.src = src;
+        if (src === "trollbox.party") {
+            this.client = io("https://trollbox.party", {
+                path: "/api/v0/si",
+                forceNew: true
+            });
+        }
+        if (src === "cyio.trollbox.party") {
+            this.client = io("https://trollbox.party", {
+                path: "/api/v0/si",
+                forceNew: true
+            });
+        }
+        if (src === "rmtb") {
+            this.client = io("https://rmtrollbox.eu-gb.mybluemix.net");
+        }
+        this.client.on(src === "trollbox.party" ? "_connected" : "connect", () => {
             this.emit("connected");
             this.client.emit('user joined', ...this.user.toArray());
         })
@@ -102,5 +116,13 @@ export class Client extends EventEmitter {
                 }
             })
         })
+    }
+    /**
+     * Converts a message so it can be used in multiple trollbox servers
+     * @param message The message to convert
+     * @returns {string} string
+     */
+    uMessage(message: string) {
+        return uMessage(message, this.src);
     }
 }

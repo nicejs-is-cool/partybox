@@ -35,4 +35,4 @@ client.addCommand(new class NoArgsTestCommand extends Command {
 
 client.addCommand(new HelpCommand())
 
-client.connect();
+client.connect("rmtb");

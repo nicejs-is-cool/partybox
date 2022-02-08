@@ -8,6 +8,7 @@ export declare class Client extends EventEmitter {
     users: User[];
     commands: Command[];
     client: any;
+    private src;
     constructor(prefix: string);
     /**
      * Sets the user used by the bot to connect to trollbox.party
@@ -36,5 +37,11 @@ export declare class Client extends EventEmitter {
     /** Connecs to trollbox.party
      * @returns {void} void
      */
-    connect(): void;
+    connect(src?: string): void;
+    /**
+     * Converts a message so it can be used in multiple trollbox servers
+     * @param message The message to convert
+     * @returns {string} string
+     */
+    uMessage(message: string): string;
 }

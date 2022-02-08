@@ -23,7 +23,7 @@ export class HelpCommand extends Command {
             });
         });
         let sendmsg = `${message.clientInstance.user.name} bot
-Powered by [Partybox](https://npmjs.com/package/partybox)
+Powered by [Partybox](//npmjs.com/package/partybox)
 
 Avaliable Commands:
 ${categoriesString}`;
