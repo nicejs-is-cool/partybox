@@ -8,15 +8,25 @@ import parseUsageArgs from './parseUsageArgs'
 import argsParser from './argsparser';
 import he from 'he';
 import uMessage from './uMessage';
-
+import fs from 'fs/promises'
+async function getPackageVersion() {
+    let packageJson = await fs.readFile('../package.json', 'utf8');
+    let packageObj = JSON.parse(packageJson);
+    return packageObj.version;
+}
 export class Client extends EventEmitter {
     public user: User;
     public users: User[];
     public commands: Command[];
     public client: any;
     private src: string = "";
+    private partyBoxVersion = "?";
     constructor(public prefix: string) {
         super();
+        getPackageVersion().then(version => {
+            this.partyBoxVersion = version;
+        })
+
         this.user = new User('A Partybox bot.', '#00ff00', 'local');
         this.users = [];
         this.commands = [];
@@ -102,7 +112,7 @@ export class Client extends EventEmitter {
                         return;
                     }
                     if (parsedUsageArgs.length > 0 && parsedUsageArgs[0]) {
-                        if (parsedArgs.size !== parseUsageArgs.length) {
+                        if (parsedArgs.size !== parsedUsageArgs.length) {
                             this.reply(msg.nick, msgmsg, `Usage: ${this.prefix}${cmd.cmd} ${cmd.usage}`);
                             return;
                         }
@@ -115,6 +125,10 @@ export class Client extends EventEmitter {
                     }
                 }
             })
+        })
+        this.client.on('update users', (users: trollbox.User[]) => {
+            this.users = users.map(user => new User(user.nick, user.color, user.home));
+            this.emit('update users', this.users);
         })
     }
     /**

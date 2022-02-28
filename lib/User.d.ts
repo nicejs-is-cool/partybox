@@ -3,7 +3,7 @@ export declare class User {
     color: string;
     home?: string | undefined;
     constructor(name: string, color: string, home?: string | undefined);
-    toArray(): string[];
+    toArray(bot?: boolean): string[];
     setName(name: string): this;
     setColor(color: string): this;
 }

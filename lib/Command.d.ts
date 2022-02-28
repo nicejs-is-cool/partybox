@@ -21,6 +21,8 @@ export declare class Command {
     hidden: boolean;
     /** The category of the command used on the default help command */
     category: string;
+    /** Disables usage arguments checking */
+    disableUsageChecking: boolean;
     /** Function that checks if the user is whitelisted
      * @param user The user to check
      * @returns True if the user is whitelisted, false otherwise

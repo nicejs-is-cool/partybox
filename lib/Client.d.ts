@@ -9,6 +9,7 @@ export declare class Client extends EventEmitter {
     commands: Command[];
     client: any;
     private src;
+    private partyBoxVersion;
     constructor(prefix: string);
     /**
      * Sets the user used by the bot to connect to trollbox.party

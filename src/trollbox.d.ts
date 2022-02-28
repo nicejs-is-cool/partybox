@@ -5,6 +5,11 @@ declare module 'trollbox' {
         color: string;
         date: number;
         home: string;
-        
+    }
+    declare interface User {
+        nick: string;
+        color: string;
+        home: string;
+        style: string;
     }
 }

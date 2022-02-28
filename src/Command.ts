@@ -21,6 +21,8 @@ export class Command {
     public hidden: boolean = false;
     /** The category of the command used on the default help command */
     public category = "No Category";
+    /** Disables usage arguments checking */
+    public disableUsageChecking: boolean = false;
     /** Function that checks if the user is whitelisted
      * @param user The user to check
      * @returns True if the user is whitelisted, false otherwise

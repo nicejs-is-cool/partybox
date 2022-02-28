@@ -1,7 +1,7 @@
 export class User {
     constructor(public name: string, public color: string, public home?: string) {}
-    toArray() {
-        return [this.name, this.color, "bot", ""];
+    toArray(bot: boolean = true) {
+        return [this.name, this.color, bot ? "bot" : "", ""];
     }
     setName(name: string) {
         this.name = name;
