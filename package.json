@@ -4,7 +4,8 @@
   "description": "A small bot framework for trollbox.party",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npx jest --isolatedModule=true --verbose"
+    "test": "npx jest --isolatedModule=true --verbose",
+    "build": "npx tsc"
   },
   "keywords": [],
   "author": "",
