@@ -2,14 +2,16 @@
 import { User } from './User';
 import EventEmitter from 'events';
 import { Command } from './Command';
+import { Handlers } from './utils/fetchHandlers';
 export declare class Client extends EventEmitter {
     prefix: string;
     user: User;
     users: User[];
     commands: Command[];
     client: any;
-    private src;
-    private partyBoxVersion;
+    handlers: Handlers;
+    src: string;
+    partyBoxVersion: string;
     constructor(prefix: string);
     /**
      * Sets the user used by the bot to connect to trollbox.party
@@ -38,7 +40,7 @@ export declare class Client extends EventEmitter {
     /** Connecs to trollbox.party
      * @returns {void} void
      */
-    connect(src?: string): void;
+    connect(src?: string): Promise<void>;
     /**
      * Converts a message so it can be used in multiple trollbox servers
      * @param message The message to convert

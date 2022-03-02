@@ -1,3 +1,4 @@
+import he from 'he';
 import { Command } from './Command';
 import { Message } from './Message';
 export class HelpCommand extends Command {
@@ -22,8 +23,11 @@ export class HelpCommand extends Command {
                 categoriesString += `    ${prefix}${cmd.cmd} ${cmd.usage} - ${cmd.description} - Aliases: ${cmd.aliases.join(', ')}\n`;
             });
         });
+        if (message.clientInstance.src === "rmtb") {
+            categoriesString = he.encode(categoriesString);
+        }
         let sendmsg = `${message.clientInstance.user.name} bot
-Powered by [Partybox](//npmjs.com/package/partybox)
+Powered by [Partybox](//npmjs.com/package/partybox) v${message.clientInstance.partyBoxVersion}
 
 Avaliable Commands:
 ${categoriesString}`;

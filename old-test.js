@@ -9,7 +9,8 @@ client.addCommand(new class TestCommand extends Command {
     usage = "<echoStr: string>"; // usage is used to determine the arguments that are required for the command to run
     aliases = ["t"];
     run(message) {
-        //console.log(message.args.get('echoStr'))
+        console.log(message.args)
+        
         message.reply("Echo: " + message.args.get('echoStr')); // here you can get "echoStr" you defined in usage
     }
 })

@@ -1,5 +1,5 @@
 export class User {
-    constructor(public name: string, public color: string, public home?: string) {}
+    constructor(public name: string, public color: string, public home?: string, public sid?: string) {}
     toArray(bot: boolean = true) {
         return [this.name, this.color, bot ? "bot" : "", ""];
     }

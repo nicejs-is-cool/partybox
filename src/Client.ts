@@ -9,8 +9,10 @@ import argsParser from './argsparser';
 import he from 'he';
 import uMessage from './uMessage';
 import fs from 'fs/promises'
+import path from 'path';
+import fetchHandlers, { Handlers } from './utils/fetchHandlers';
 async function getPackageVersion() {
-    let packageJson = await fs.readFile('../package.json', 'utf8');
+    let packageJson = await fs.readFile(path.join(__dirname, '../package.json'), 'utf8');
     let packageObj = JSON.parse(packageJson);
     return packageObj.version;
 }
@@ -19,8 +21,9 @@ export class Client extends EventEmitter {
     public users: User[];
     public commands: Command[];
     public client: any;
-    private src: string = "";
-    private partyBoxVersion = "?";
+    public handlers: Handlers = {};
+    public src: string = "";
+    public partyBoxVersion = "?";
     constructor(public prefix: string) {
         super();
         getPackageVersion().then(version => {
@@ -30,7 +33,6 @@ export class Client extends EventEmitter {
         this.user = new User('A Partybox bot.', '#00ff00', 'local');
         this.users = [];
         this.commands = [];
-        
     }
     /**
      * Sets the user used by the bot to connect to trollbox.party
@@ -70,7 +72,7 @@ export class Client extends EventEmitter {
     /** Connecs to trollbox.party
      * @returns {void} void
      */
-    connect(src: string = "trollbox.party") {
+    async connect(src: string = "trollbox.party") {
         this.src = src;
         if (src === "trollbox.party") {
             this.client = io("https://trollbox.party", {
@@ -87,7 +89,19 @@ export class Client extends EventEmitter {
         if (src === "rmtb") {
             this.client = io("https://rmtrollbox.eu-gb.mybluemix.net");
         }
-        this.client.on(src === "trollbox.party" ? "_connected" : "connect", () => {
+        await fetchHandlers(path.join(__dirname, "./handlers"))
+            .then(handlers => {
+                if (!handlers) {
+                    process.emit('uncaughtException', new Error("No handlers found"));
+                    return;
+                }
+                this.handlers = handlers;
+                
+            })
+        for (let h in this.handlers) {
+            this.client.on(h, this.handlers[h].default.bind(this, this));
+        }
+        /*this.client.on(src === "trollbox.party" ? "_connected" : "connect", () => {
             this.emit("connected");
             this.client.emit('user joined', ...this.user.toArray());
         })
@@ -101,21 +115,11 @@ export class Client extends EventEmitter {
             let user = new User(he.decode(msg.nick), msg.color, msg.home);
             
             this.commands.forEach(cmd => {
-                //console.log(cmd, command);
                 if (cmd.cmd === command || cmd.aliases?.includes?.(command)) {
                     let parsedUsageArgs = parseUsageArgs(cmd.usage);
                     let parsedArgs = new Map<string, any>();
-                    try {
-                        parsedArgs = argsParser(parsedUsageArgs, args);
-                    } catch {
-                        this.reply(msg.nick, msgmsg, `Usage: ${this.prefix}${cmd.cmd} ${cmd.usage}`);
-                        return;
-                    }
-                    if (parsedUsageArgs.length > 0 && parsedUsageArgs[0]) {
-                        if (parsedArgs.size !== parsedUsageArgs.length) {
-                            this.reply(msg.nick, msgmsg, `Usage: ${this.prefix}${cmd.cmd} ${cmd.usage}`);
-                            return;
-                        }
+                    if (canSendCommandUsage(parsedUsageArgs, args) && !cmd.disableUsageChecking) {
+                        return this.reply(msg.nick, msgmsg, `Usage: ${this.prefix}${cmd.cmd} ${cmd.usage}`);
                     }
                     let message = new Message(user, msgmsg, new Date(msg.date), parsedArgs, this);
                     if (cmd.userCanRunCommand(user)) {
@@ -127,9 +131,10 @@ export class Client extends EventEmitter {
             })
         })
         this.client.on('update users', (users: trollbox.User[]) => {
-            this.users = users.map(user => new User(user.nick, user.color, user.home));
+            this.users = Object.entries(users).map(user => new User(user[1].nick, user[1].color, user[1].home, user[0]));
             this.emit('update users', this.users);
-        })
+        })*/
+
     }
     /**
      * Converts a message so it can be used in multiple trollbox servers

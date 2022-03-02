@@ -6,10 +6,13 @@ declare module 'trollbox' {
         date: number;
         home: string;
     }
-    declare interface User {
+    export interface User {
         nick: string;
         color: string;
         home: string;
         style: string;
+    }
+    export interface UserList {
+        [key: string]: User;
     }
 }
